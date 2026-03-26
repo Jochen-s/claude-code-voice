@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Models (downloaded at runtime, too large for git)
+models/
+*.pt
+*.pth
+*.onnx
+*.bin
+*.safetensors
+
+# Audio files (reference clips are OK, generated audio is not)
+*.wav
+*.mp3
+*.ogg
+!profiles/reference-audio/*.wav
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.*
+
+# Logs
+*.log
+
+# Windows artifacts
+NUL

@@ -1,0 +1,128 @@
+{
+  "profiles": {
+    "default": {
+      "engine": "qwen3-tts",
+      "voice": "vivian",
+      "description": "Default voice (natural female, fast)"
+    },
+    "jarvis": {
+      "engine": "qwen3-tts",
+      "voice": "eric",
+      "description": "J.A.R.V.I.S. - deep male voice via Qwen3-TTS",
+      "speed": 1.0
+    },
+    "seven": {
+      "engine": "qwen3-tts",
+      "voice": "sohee",
+      "description": "Seven of Nine - precise, direct female voice via Qwen3-TTS",
+      "speed": 1.0
+    },
+    "kitt-clone": {
+      "engine": "chatterbox",
+      "voice": "kitt-daniels.wav",
+      "description": "KITT voice-cloned from William Daniels via Chatterbox",
+      "exaggeration": 0.5,
+      "speed": 1.0
+    },
+    "trek-computer": {
+      "engine": "chatterbox",
+      "voice": "trek-computer.wav",
+      "description": "Star Trek Computer (Majel Barrett) via Chatterbox",
+      "exaggeration": 0.3,
+      "speed": 1.0
+    },
+    "picard": {
+      "engine": "chatterbox",
+      "voice": "picard-stewart.wav",
+      "description": "Captain Picard - voice-cloned from Patrick Stewart via Chatterbox",
+      "exaggeration": 0.4,
+      "speed": 1.0,
+      "persona": {
+        "name": "Jean-Luc",
+        "title": "Captain",
+        "user_name": "Number One",
+        "style": "Measured, thoughtful, diplomatic. Occasional Shakespearean flourish. Says 'Make it so', 'Engage', 'Tea, Earl Grey, hot' naturally."
+      }
+    },
+    "scotty": {
+      "engine": "chatterbox",
+      "voice": "scotty-p263.wav",
+      "description": "Scotty - Aberdeen Scottish accent via Chatterbox",
+      "exaggeration": 0.6,
+      "speed": 1.0
+    },
+    "kokoro-default": {
+      "engine": "kokoro",
+      "voice": "af_sky",
+      "description": "Legacy Kokoro voice (lightweight fallback)"
+    },
+    "kokoro-jarvis": {
+      "engine": "kokoro",
+      "voice": "bm_george",
+      "description": "Legacy J.A.R.V.I.S. via Kokoro (fast fallback)",
+      "speed": 1.0
+    }
+  },
+  "active": "picard",
+  "engines": {
+    "qwen3-tts": {
+      "endpoint": "http://127.0.0.1:8880/v1",
+      "type": "openai-compatible",
+      "model": "qwen3-tts",
+      "gpu": true,
+      "voices": [
+        "aiden",
+        "dylan",
+        "eric",
+        "ono_anna",
+        "ryan",
+        "serena",
+        "sohee",
+        "uncle_fu",
+        "vivian"
+      ],
+      "features": [
+        "multilingual",
+        "streaming"
+      ]
+    },
+    "chatterbox": {
+      "endpoint": "http://127.0.0.1:8890/v1",
+      "type": "openai-compatible",
+      "model": "chatterbox-turbo",
+      "gpu": true,
+      "voice_format": "filename.wav",
+      "features": [
+        "voice-cloning",
+        "emotion-control",
+        "paralinguistic-tags"
+      ],
+      "parameters": {
+        "exaggeration": 0.5,
+        "cfg_weight": 0.5,
+        "temperature": 0.8
+      }
+    },
+    "kokoro": {
+      "endpoint": "http://127.0.0.1:8880/v1",
+      "type": "openai-compatible",
+      "note": "Legacy fallback -- only active when Qwen3-TTS is not installed"
+    },
+    "xtts": {
+      "endpoint": "http://[::1]:8890/v1",
+      "type": "coqui-xtts-v2",
+      "note": "Legacy fallback -- replaced by Chatterbox"
+    }
+  },
+  "stt": {
+    "engine": "faster-whisper-server",
+    "endpoint": "http://127.0.0.1:2022/v1/audio/transcriptions",
+    "model": "large-v3",
+    "language": "en",
+    "gpu": true,
+    "plugin": "claude-stt",
+    "hotkey": "ctrl+f12",
+    "mode": "push-to-talk",
+    "config": "~/.claude/plugins/claude-stt/config.toml"
+  }
+}
