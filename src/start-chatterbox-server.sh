@@ -14,7 +14,7 @@ PORT="${VOICEMODE_CHATTERBOX_PORT:-8890}"
 
 venv="$REPO_DIR/.venv"
 if [ ! -d "$venv" ]; then
-  echo "Chatterbox not installed. Run: bash setup-chatterbox.sh"
+  echo "Chatterbox not installed. Run: bash src/setup-chatterbox.sh (from repo root)"
   exit 1
 fi
 

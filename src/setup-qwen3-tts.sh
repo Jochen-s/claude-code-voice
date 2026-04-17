@@ -80,4 +80,4 @@ print('Qwen3-TTS model downloaded')
 
 deactivate 2>/dev/null || true
 info "Qwen3-TTS installed at $REPO_DIR"
-info "Start with: bash start-qwen3-tts-server.sh (port 8880)"
+info "Start with: voice start  (or: bash src/start-qwen3-tts-server.sh from repo root, port 8880)"

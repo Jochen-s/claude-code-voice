@@ -97,4 +97,4 @@ fi
 
 deactivate 2>/dev/null || true
 info "Chatterbox installed at $REPO_DIR"
-info "Start with: bash start-chatterbox-server.sh (port 8890)"
+info "Start with: voice start  (or: bash src/start-chatterbox-server.sh from repo root, port 8890)"

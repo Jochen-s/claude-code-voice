@@ -15,7 +15,7 @@ PORT="${VOICEMODE_KOKORO_PORT:-8880}"
 # Use the unified kokoro-venv (has both kokoro-onnx and fastapi/uvicorn)
 venv="$SERVICES_DIR/kokoro-venv"
 if [ ! -d "$venv" ]; then
-  echo "Kokoro not installed. Run: bash setup-voice-services.sh --kokoro"
+  echo "Kokoro not installed. Run: bash setup-voice-services.sh --kokoro (from repo root)"
   exit 1
 fi
 

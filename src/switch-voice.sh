@@ -4,7 +4,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROFILES="$SCRIPT_DIR/voice-profiles.json"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROFILES="${VOICE_PROFILES_PATH:-$REPO_ROOT/profiles/voice-profiles.json}"
 
 show_profiles() {
   echo "Available voice profiles:"

@@ -15,7 +15,7 @@ MODEL="${VOICEMODE_WHISPER_MODEL:-large-v3}"
 
 venv="$SERVICES_DIR/whisper-venv"
 if [ ! -d "$venv" ]; then
-  echo "Whisper server not installed. Run: bash setup-voice-services.sh --whisper"
+  echo "Whisper server not installed. Run: bash setup-voice-services.sh --whisper (from repo root)"
   exit 1
 fi
 

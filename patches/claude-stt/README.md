@@ -16,10 +16,12 @@ Patched files for the `claude-stt` plugin (v0.1.0) that fix Windows-specific iss
 
 ## Re-applying after plugin update
 
+From the repo root:
+
 ```bash
 PLUGIN_PKG="$USERPROFILE/.claude/plugins/cache/jarrodwatts-claude-stt/claude-stt/0.1.0/.venv/Lib/site-packages/claude_stt"
-cp src/voice/patches/claude-stt/keyboard.py "$PLUGIN_PKG/keyboard.py"
-cp src/voice/patches/claude-stt/daemon.py "$PLUGIN_PKG/daemon.py"
+cp patches/claude-stt/keyboard.py "$PLUGIN_PKG/keyboard.py"
+cp patches/claude-stt/daemon.py "$PLUGIN_PKG/daemon.py"
 ```
 
-Then restart the daemon: `bash src/voice/start-all.sh stop && bash src/voice/start-all.sh`
+Then restart the daemon: `voice stop && voice start`  (or `bash start-all.sh stop && bash start-all.sh` from repo root)

@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 # Start all voice services in background
-# Usage: bash start-all.sh        (start)
-#        bash start-all.sh stop   (stop all)
-#        bash start-all.sh status (check health)
+# Usage: bash start-all.sh             (start — Chatterbox + Whisper only)
+#        VOICEMODE_ENABLE_TTS=1 bash start-all.sh  (start — all incl. Qwen3-TTS)
+#        bash start-all.sh stop        (stop all)
+#        bash start-all.sh status      (check health)
+#
+# Qwen3-TTS (port 8880) is disabled by default — only needed for preset voices
+# (jarvis, seven, default). Picard and other cloned voices use Chatterbox directly.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+HELPERS_DIR="$SCRIPT_DIR/src"
 # Resolve home to a path that works in both MINGW64 and native Windows
 if command -v cygpath &>/dev/null; then
   WIN_HOME="$(cygpath -u "$USERPROFILE")"
@@ -47,27 +52,41 @@ start_svc() {
 
 start_services() {
   echo "Starting voice services..."
+  # DEPENDENCY CHECKLIST — this function MUST start all 4 services:
+  #   1. TTS engine (port 8880)   — optional, gated by VOICEMODE_ENABLE_TTS
+  #   2. Chatterbox (port 8890)   — voice cloning
+  #   3. Whisper STT (port 2022)  — speech-to-text
+  #   4. claude-stt daemon        — push-to-talk hotkey (NO port, easy to miss!)
+  # If you edit this function, verify all 4 blocks survive. See: 2026-03-27 incident.
 
-  # TTS: prefer Qwen3-TTS, fall back to Kokoro
-  if [ -d "$WIN_HOME/.voicemode/services/qwen3-tts/.venv" ]; then
-    start_svc "qwen3-tts" "$SCRIPT_DIR/start-qwen3-tts-server.sh" 8880
+  # TTS (port 8880): Qwen3-TTS or Kokoro — disabled by default since Picard
+  # uses Chatterbox directly. Enable with: VOICEMODE_ENABLE_TTS=1
+  if [ "${VOICEMODE_ENABLE_TTS:-0}" = "1" ]; then
+    if [ -d "$WIN_HOME/.voicemode/services/qwen3-tts/.venv" ]; then
+      start_svc "qwen3-tts" "$HELPERS_DIR/start-qwen3-tts-server.sh" 8880
+    else
+      start_svc "kokoro" "$HELPERS_DIR/start-kokoro-server.sh" 8880
+    fi
   else
-    start_svc "kokoro" "$SCRIPT_DIR/start-kokoro-server.sh" 8880
+    echo "  qwen3-tts skipped (not needed for voice-clone profiles)"
+    echo "  Enable with: VOICEMODE_ENABLE_TTS=1 bash start-all.sh"
   fi
 
   # Voice cloning: prefer Chatterbox, fall back to XTTS-v2
   if [ -d "$WIN_HOME/.voicemode/services/chatterbox/.venv" ]; then
-    start_svc "chatterbox" "$SCRIPT_DIR/start-chatterbox-server.sh" 8890
+    start_svc "chatterbox" "$HELPERS_DIR/start-chatterbox-server.sh" 8890
   else
-    start_svc "xtts" "$SCRIPT_DIR/start-xtts-server.sh" 8890
+    start_svc "xtts" "$HELPERS_DIR/start-xtts-server.sh" 8890
   fi
 
   # STT: faster-whisper (large-v3)
-  start_svc "whisper" "$SCRIPT_DIR/start-whisper-server.sh" 2022
+  start_svc "whisper" "$HELPERS_DIR/start-whisper-server.sh" 2022
 
   # Readiness checks
   echo "Waiting for services..."
-  wait_for_port 8880 && echo "  TTS (8880) ready" || echo "  TTS (8880): not ready after 30s (check $LOG_DIR/)"
+  if [ "${VOICEMODE_ENABLE_TTS:-0}" = "1" ]; then
+    wait_for_port 8880 && echo "  TTS (8880) ready" || echo "  TTS (8880): not ready after 30s (check $LOG_DIR/)"
+  fi
   wait_for_port 8890 && echo "  Clone TTS (8890) ready" || echo "  Clone TTS (8890): not ready after 30s (check $LOG_DIR/)"
   wait_for_port 2022 && echo "  STT (2022) ready" || echo "  STT (2022): not ready after 30s (check $LOG_DIR/)"
 
@@ -171,8 +190,16 @@ stop_services() {
 status_services() {
   echo "Voice services status:"
 
-  # TTS engines
-  for svc_port in "qwen3-tts:8880" "chatterbox:8890" "whisper:2022"; do
+  # TTS (port 8880) — may be intentionally disabled
+  if curl -sf "http://127.0.0.1:8880/health" >/dev/null 2>&1 \
+  || curl -sf "http://127.0.0.1:8880/" >/dev/null 2>&1; then
+    printf "  %-14s running (port 8880)\n" "qwen3-tts"
+  else
+    printf "  %-14s disabled (enable: VOICEMODE_ENABLE_TTS=1)\n" "qwen3-tts"
+  fi
+
+  # Voice cloning + STT
+  for svc_port in "chatterbox:8890" "whisper:2022"; do
     svc="${svc_port%%:*}"
     port="${svc_port##*:}"
     if curl -sf "http://127.0.0.1:$port/health" >/dev/null 2>&1 \

@@ -211,6 +211,8 @@ claude-code-voice/
 | STT not transcribing | Whisper server down | Check `curl http://localhost:2022/health` |
 | Duplicate transcriptions | STT fires twice | Install `stt-dedup-guard.js` hook |
 | MINGW64 path issues | `$HOME` vs `$USERPROFILE` | Use `cygpath -u "$USERPROFILE"` |
+| `chatterbox not installed` / `whisper not installed` on `voice start` | Helper scripts in `src/` not found | Verify `ls src/start-*-server.sh` resolves; confirm `start-all.sh` references `$HELPERS_DIR`, not `$SCRIPT_DIR` directly |
+| `./src/switch-voice.sh` fails with "No such file" for `voice-profiles.json` | Profiles live at `profiles/voice-profiles.json`, not `src/` | Run from repo root; override with `VOICE_PROFILES_PATH=...` if you moved the file |
 | Chatterbox voice sounds wrong | Bad reference audio | Use a clean 3-10s WAV clip, single speaker, no background noise |
 
 ---

@@ -86,7 +86,7 @@ install_kokoro_server() {
 
   deactivate 2>/dev/null || true
   info "Kokoro server dependencies installed"
-  info "Start with: start-kokoro-server.sh"
+  info "Start with: voice start  (or: bash src/start-kokoro-server.sh from repo root)"
 }
 
 install_whisper() {
@@ -152,21 +152,21 @@ install_whisper_server() {
 
   deactivate 2>/dev/null || true
   info "Whisper server installed (using whisper_server.py)"
-  info "Start with: start-whisper-server.sh"
+  info "Start with: voice start  (or: bash src/start-whisper-server.sh from repo root)"
 }
 
 install_qwen3_tts() {
-  info "Delegating to setup-qwen3-tts.sh..."
+  info "Delegating to src/setup-qwen3-tts.sh..."
   local script_dir
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  bash "$script_dir/setup-qwen3-tts.sh"
+  bash "$script_dir/src/setup-qwen3-tts.sh"
 }
 
 install_chatterbox() {
-  info "Delegating to setup-chatterbox.sh..."
+  info "Delegating to src/setup-chatterbox.sh..."
   local script_dir
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  bash "$script_dir/setup-chatterbox.sh"
+  bash "$script_dir/src/setup-chatterbox.sh"
 }
 
 show_usage() {

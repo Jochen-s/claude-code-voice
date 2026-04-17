@@ -15,7 +15,7 @@ VOICES_DIR="$WIN_HOME/.claude/voices"
 
 venv="$SERVICES_DIR/xtts-venv"
 if [ ! -d "$venv" ]; then
-  echo "XTTS not installed. Run: bash setup-xtts.sh"
+  echo "XTTS not installed. Run: bash src/setup-xtts.sh (from repo root)"
   exit 1
 fi
 
